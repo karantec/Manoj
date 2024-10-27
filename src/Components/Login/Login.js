@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import {  useNavigate } from 'react-router-dom'; // Make sure you have react-router-dom installed
+import axios from 'axios';
 
 const LoginForm = () => {
   const [email, setEmail] = useState('');
@@ -29,14 +30,23 @@ const LoginForm = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
     if (validate()) {
-      setIsSubmitting(true);
-      // Handle form submission (e.g., send data to an API)
-      console.log('Form submitted:', { email, password });
-      alert("Form is submitted");
-      setIsSubmitting(false);
+      try {
+        // Handle form submission (e.g., send data to an API)
+        console.log('Form submitted:', { email, password });
+        const res = await axios.post("localhost:3000/api/v1/login",{email,password})
+        if(res.status == 200){
+          alert("Form is submitted");
+          setIsSubmitting(true);
+        }
+        else{
+          setIsSubmitting(false);
+        }
+      } catch (error) {
+        setIsSubmitting(false)
+      }
     }
   };
 
