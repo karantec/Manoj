@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import axios from "axios";
 
 const OtpVerification = () => {
   const [otp, setOtp] = useState('');
@@ -8,22 +9,32 @@ const OtpVerification = () => {
   const location = useLocation();
   const email = location.state?.email;
 
-  const handleVerifyOtp = (e) => {
-    e.preventDefault();
-    
-    // Validate OTP
-    if (!otp) {
-      setError('OTP is required');
-      return;
-    }
-    
-    // Send OTP to backend for verification
-    // Assuming `verifyOtp` is an API call
-    console.log(`Verifying OTP for email: ${email}`);
-
-    // Simulate successful OTP verification
-    alert('OTP verified successfully!');
-    navigate('/login'); // Redirect to login page
+  const handleVerifyOtp = async(e) => {
+   try {
+     e.preventDefault();
+     
+     // Validate OTP
+     if (!otp) {
+       setError('OTP is required');
+       return;
+     }
+     const res = await axios.post("localhost:3000/api/v1/optverify",{otp});
+     
+     if(res.status == 200){
+       console.log(`Verifying OTP for email: ${email}`);
+       alert('OTP verified successfully!');
+       navigate('/login'); // Redirect to login page
+     }
+     else{
+       console.log("Wrong")
+     }
+     // Send OTP to backend for verification
+     // Assuming `verifyOtp` is an API call
+ 
+     // Simulate successful OTP verification
+   } catch (error) {
+    console.log(error)
+   }
   };
 
   return (

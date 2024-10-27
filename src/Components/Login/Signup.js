@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import axios from "axios"
+
 
 const SignupForm = () => {
   const [name, setName] = useState('');
@@ -49,14 +51,20 @@ const SignupForm = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
     if (validate()) {
-      setIsSubmitting(true);
+      // setIsSubmitting(true);
       // Handle form submission (e.g., send data to an API)
-      console.log('Form submitted:', { name, email, dob, password, address });
-      alert("Form is submitted");
-      setIsSubmitting(false);
+      // console.log('Form submitted:', { name, email, dob, password, address });
+      const res =  await axios.post("localhost:3000/api/v1/signup",{ name, email, dob, password, address });
+      if(res.status == 200){
+        alert("Form is submitted");
+        setIsSubmitting(true)
+      }
+      else{
+        setIsSubmitting(false);
+      }
     }
   };
 
